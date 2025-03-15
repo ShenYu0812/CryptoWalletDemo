@@ -20,4 +20,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "CryptoWalletDemo"
 include(":app")
+include(":mock")
 include(":server-netty")

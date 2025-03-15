@@ -10,11 +10,16 @@ import io.ktor.websocket.readText
 
 class KtorClient {
     private val client = HttpClient(OkHttp) {
+         engine {
+            config {
+                sslSocketFactory(SslSettings.getSslContext()!!.socketFactory, SslSettings.getTrustManager())
+            }
+        }
         install(WebSockets)
     }
 
     suspend fun makeHttpRequest() {
-        val response = client.get("http://127.0.0.1:8080/") {
+        val response = client.get("https://127.0.0.1:8443/https_link") {
 
         }
         println("HTTP response: $response")

@@ -1,26 +1,29 @@
 package com.shenyu.server.netty
 
+import com.shenyu.server.netty.plugins.configureRouting
+import com.shenyu.server.netty.plugins.envConfig
 import io.ktor.server.application.Application
+import io.ktor.server.engine.applicationEnvironment
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import io.ktor.server.response.respondText
-import io.ktor.server.routing.get
-import io.ktor.server.routing.routing
+import org.slf4j.LoggerFactory
 
 
-fun main() {//: Unit = io.ktor.server.netty.EngineMain.main(args)
-    embeddedServer(
-        factory = Netty,
-        host = "127.0.0.1",
-        port = 8081,
-        module = Application::module
-    ).start(wait = true)
+fun main() {
+    runCatching {
+        embeddedServer(
+            factory = Netty,
+            environment = applicationEnvironment {
+                log = LoggerFactory.getLogger("ktor.application")
+            },
+            configure = { envConfig() },
+            module = Application::module
+        ).start(wait = true)
+    }.onFailure { e ->
+        e.printStackTrace()
+    }
 }
 
 fun Application.module() {
-    routing {
-        get("/hello") {
-            call.respondText("Hello, world!")
-        }
-    }
+    configureRouting()
 }

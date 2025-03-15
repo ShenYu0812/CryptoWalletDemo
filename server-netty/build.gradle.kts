@@ -1,3 +1,5 @@
+import com.android.utils.TraceUtils.simpleId
+
 plugins {
     alias(libs.plugins.jetbrains.kotlin.jvm)
     alias(libs.plugins.ktor)
@@ -18,7 +20,6 @@ ktor {
         implementation(libs.ktor.server.core)
         implementation(libs.ktor.server.netty)
         implementation(libs.ktor.server.websockets)
-        implementation(libs.ktor.server.config.yaml)
         implementation(libs.ktor.network.tls.certificates)
         implementation(libs.ktor.server.content.negotiation.jvm)
     }

@@ -1,9 +1,15 @@
 package com.shenyu.foris.wallet
 
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.IBinder
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,8 +30,25 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shenyu.foris.wallet.ui.theme.CryptoWalletTheme
+import com.shenyu.foris.wallet.viewmodel.MainViewModel
+import com.shenyu.mock.IMockService
+import com.shenyu.mock.MockService
 
 class MainActivity : ComponentActivity() {
+
+    private val mainViewModel by viewModels<MainViewModel>()
+    private var mockServiceProxy: IMockService? = null
+    private val connection = object : ServiceConnection {
+        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+            mockServiceProxy = IMockService.Stub.asInterface(service)
+            mockServiceProxy?.startServer()
+        }
+
+        override fun onServiceDisconnected(arg0: ComponentName) {
+            mockServiceProxy?.stopServer()
+            mockServiceProxy = null
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +66,7 @@ class MainActivity : ComponentActivity() {
                         Spacer(modifier = Modifier.height(21.dp))
                         Button(
                             onClick = {
+                                mainViewModel.testLocalHttpRequest()
                             },
                             modifier = Modifier.fillMaxWidth()
                                 .height(60.dp)
@@ -57,6 +81,7 @@ class MainActivity : ComponentActivity() {
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(
                             onClick = {
+                                mainViewModel.testWebsockets()
                             },
                             modifier = Modifier.fillMaxWidth()
                                 .height(60.dp)
@@ -72,8 +97,14 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+        val serviceIntent = Intent(this, MockService::class.java)
+        bindService(serviceIntent, connection, Context.BIND_AUTO_CREATE)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        unbindService(connection)
+    }
 }
 
 
