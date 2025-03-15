@@ -14,7 +14,7 @@ class KtorClient {
     private val client = HttpClient(OkHttp) {
         engine {
             config {
-                val trustManager = FakeTrustManager()
+                val trustManager = SslSettings.createTrustManager()
                 sslSocketFactory(SslSettings.createSSLContext(trustManager).socketFactory, trustManager)
             }
         }

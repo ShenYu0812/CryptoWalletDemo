@@ -3,55 +3,21 @@ package com.shenyu.foris.wallet.network
 import android.util.Log
 import com.blankj.utilcode.util.Utils
 import com.shenyu.foris.wallet.R
-import io.ktor.network.tls.certificates.KeyType
-import io.ktor.network.tls.certificates.buildKeyStore
-import io.ktor.network.tls.extensions.HashAlgorithm
-import io.ktor.network.tls.extensions.SignatureAlgorithm
 import java.security.KeyStore
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
 import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManagerFactory
 import javax.net.ssl.X509TrustManager
-import javax.security.auth.x500.X500Principal
 
-
-private const val aliasName = "MyDemo"
-private const val kPassword = "UmN68whaFcKH"
 
 object SslSettings {
-    // 获取客户端信任证书库
-    private fun getClientTrustStore(): KeyStore {
-        val context = Utils.getApp().applicationContext
-        val keyStore = KeyStore.getInstance("BKS")
-        context.resources.openRawResource(R.raw.keystore).use { inputStream ->
-            keyStore.load(inputStream, kPassword.toCharArray())
-        }
-        return keyStore
-    }
-
-    private fun buildClientKeyStore(): KeyStore {
-        return buildKeyStore {
-            certificate(aliasName) builder@{
-                hash = HashAlgorithm.SHA256
-                sign = SignatureAlgorithm.RSA
-                daysValid = 825
-                keySizeInBits = 2048
-                password = kPassword
-                keyType = KeyType.Client
-                domains = listOf("127.0.0.1")
-                subject = X500Principal("CN=localhost, OU=ktor, O=Foris, C=US, emailAddress=shenyu2it@gmail.com")
-            }
-        }
-    }
 
     // 创建信任管理器
     fun createTrustManager(): X509TrustManager {
-        val trustStore = buildClientKeyStore()
-        logCertificateChain(trustStore)
-        val tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())
-        tmf.init(trustStore)
-        return tmf.trustManagers.first { it is X509TrustManager } as X509TrustManager
+        val context = Utils.getApp().applicationContext
+        val certificates = PemUtils.loadCertificatesFromPem(context, R.raw.root_ca)
+        val trustManagers = PemUtils.createTrustManagerFromPem(certificates)
+        return trustManagers.first { it is X509TrustManager } as X509TrustManager
     }
 
     // 创建SSL上下文

@@ -25,10 +25,12 @@ class ServerBinder: IMockService.Stub() {
             throwable.printStackTrace()
         }
         CoroutineScope(Dispatchers.IO + exceptionHandler + SupervisorJob()).launch {
+//            com.shenyu.server.cio.main()
             com.shenyu.server.netty.main()
         }
     }
 
     override fun stopServer() {
+//        com.shenyu.server.cio.shotDown()
     }
 }

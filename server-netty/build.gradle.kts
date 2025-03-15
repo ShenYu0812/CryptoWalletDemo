@@ -1,9 +1,8 @@
-import com.android.utils.TraceUtils.simpleId
-
 plugins {
+    application
     alias(libs.plugins.jetbrains.kotlin.jvm)
-    alias(libs.plugins.ktor)
     id("org.jetbrains.kotlin.plugin.serialization") version "2.0.0"
+    alias(libs.plugins.ktor)
 }
 
 group = "com.shenyu.server.netty"
