@@ -51,6 +51,7 @@ android {
         resources.excludes.add("META-INF/INDEX.LIST")
         resources.excludes.add("META-INF/DEPENDENCIES")
         resources.excludes.add("META-INF/io.netty.versions.properties")
+        resources.excludes.add("META-INF/versions/9/OSGI-INF/MANIFEST.MF")
     }
 }
 
@@ -81,10 +82,12 @@ dependencies {
     implementation(libs.ktor.client.logging)
     implementation(libs.ktor.client.websockets)
     implementation(libs.ktor.serialization.gson)
+    implementation(libs.ktor.network.tls.certificates)
     implementation(libs.gson)
 
-    implementation(libs.web3j.core)
-    implementation(libs.web3j.crypto)
+//    implementation(libs.web3j.core)
+//    implementation(libs.web3j.crypto)
 
     implementation(libs.blankj.utils)
+    implementation("org.bouncycastle:bcprov-jdk18on:1.77")
 }
