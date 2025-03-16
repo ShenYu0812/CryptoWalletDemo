@@ -66,6 +66,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.material.icons.extended)
 
     testImplementation(libs.junit)
 
@@ -93,4 +94,13 @@ dependencies {
 
     implementation(libs.blankj.utils)
     implementation(libs.bouncycastle.bcprov.jdk18on)
+
+    implementation(libs.coil.compose)
+}
+
+configurations.all {
+    resolutionStrategy {
+//        force("org.bouncycastle:bcprov-jdk15on:1.65")
+//        force("org.bouncycastle:bcpkix-jdk15on:1.65")
+    }
 }
