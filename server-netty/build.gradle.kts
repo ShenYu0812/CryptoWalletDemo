@@ -24,7 +24,7 @@ ktor {
         implementation(libs.ktor.server.websockets)
         implementation(libs.ktor.network.tls.certificates)
         implementation(libs.ktor.server.content.negotiation.jvm)
-        implementation(libs.ktor.serialization.kotlinx.json.jvm)
+        implementation(libs.ktor.serialization.gson)
         implementation(libs.bouncycastle.bcprov.jdk18on)
         implementation(libs.bouncycastle.bcpkix.jdk18on)
         implementation(libs.bcutil.jdk18on)
@@ -48,7 +48,9 @@ tasks.withType<ProcessResources> {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
     // 确保资源文件被复制到输出目录
     from("src/main/resources") {
-        include("*/**")
+        include("ssl/**")
+        include("data/**")
+        include("logback.xml")
     }
 }
 
@@ -57,6 +59,8 @@ tasks.withType<Jar> {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
     // 确保资源文件被打包到jar中
     from("src/main/resources") {
-        include("*/**")
+        include("ssl/**")
+        include("data/**")
+        include("logback.xml")
     }
 }

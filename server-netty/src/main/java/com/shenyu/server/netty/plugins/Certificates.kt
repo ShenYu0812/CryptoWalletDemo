@@ -9,6 +9,8 @@ import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter
 import org.slf4j.LoggerFactory
 import java.io.InputStream
 import java.io.InputStreamReader
+import java.security.KeyPair
+import java.security.KeyPairGenerator
 import java.security.KeyStore
 import java.security.cert.CertificateFactory
 import java.security.cert.X509Certificate
@@ -21,9 +23,11 @@ private const val certificatePassword = "UmN68whaFcKH"
 private const val keyStorePassword = "UmN68whaFcKH"
 
 fun NettyApplicationEngine.Configuration.envConfig() {
-    val chainStream = Thread.currentThread().contextClassLoader.getResourceAsStream("ssl/fullchain.pem")
+    val chainStream = Thread.currentThread().contextClassLoader
+        .getResourceAsStream("ssl/fullchain.pem")
         ?: throw IllegalStateException("无法找到fullchain.pem")
-    val privateKeyStream = Thread.currentThread().contextClassLoader.getResourceAsStream("ssl/server.key")
+    val privateKeyStream = Thread.currentThread().contextClassLoader
+        .getResourceAsStream("ssl/server.key")
         ?: throw IllegalStateException("无法找到server.key")
 
     connector {
@@ -89,3 +93,12 @@ fun createKeyStore(
         throw e
     }
 }
+
+
+fun generateRSAKeyPair(): KeyPair = runCatching {
+    val keyPairGenerator = KeyPairGenerator.getInstance("RSA")
+    keyPairGenerator.initialize(2048)
+    keyPairGenerator.generateKeyPair()
+}.onFailure { e ->
+    throw RuntimeException(e)
+}.getOrThrow()

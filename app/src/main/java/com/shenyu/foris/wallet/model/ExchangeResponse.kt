@@ -2,6 +2,7 @@ package com.shenyu.foris.wallet.model
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import com.shenyu.foris.wallet.utils.validateNumber
 import kotlinx.parcelize.Parcelize
 
 
@@ -25,7 +26,7 @@ data class Tier(
 ): Parcelable {
 
     fun exchanged(exchangeAmount: Double): ExchangeResult? = runCatching tier@{
-        val rate = this@tier.rates.lastOrNull()?.validateRate()
+        val rate = this@tier.rates.lastOrNull()?.rate?.validateNumber()
             ?: return@tier null
         val exchangeResult = exchangeAmount * rate
         ExchangeResult(fromCurrency, toCurrency, exchangeAmount, exchangeResult)
@@ -36,11 +37,6 @@ data class Tier(
 @Parcelize
 data class Rate(
     val amount: String,
-    val rate: String
-): Parcelable {
+    val rate: String,
+): Parcelable
 
-    fun validateRate(): Double? = runCatching {
-        rate.toDoubleOrNull()
-    }.getOrNull()
-
-}

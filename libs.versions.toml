@@ -62,6 +62,7 @@ log4j-slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4jSi
 log4j-slf4j-android = { group = "org.slf4j", name = "slf4j-android", version = "1.7.36" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-server-content-negotiation-jvm = { module = "io.ktor:ktor-server-content-negotiation-jvm" }
 ktor-serialization-kotlinx-json-jvm = { module = "io.ktor:ktor-serialization-kotlinx-json-jvm" }
 

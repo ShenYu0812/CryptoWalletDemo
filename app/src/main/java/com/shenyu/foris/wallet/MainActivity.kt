@@ -31,16 +31,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shenyu.foris.wallet.ui.theme.CryptoWalletTheme
 import com.shenyu.foris.wallet.viewmodel.MainViewModel
+import com.shenyu.foris.wallet.network.DefaultServerLifecycleCallback
+import com.shenyu.foris.wallet.network.OnServerLifecycleEvent
 import com.shenyu.mock.IMockService
 import com.shenyu.mock.MockService
 
-class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity(), OnServerLifecycleEvent {
 
     private val mainViewModel by viewModels<MainViewModel>()
     private var mockServiceProxy: IMockService? = null
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
             mockServiceProxy = IMockService.Stub.asInterface(service)
+            mockServiceProxy?.registerServerLifecycle(
+                DefaultServerLifecycleCallback(this@MainActivity)
+            )
             mockServiceProxy?.startServer()
         }
 
@@ -66,7 +71,6 @@ class MainActivity : ComponentActivity() {
                         Spacer(modifier = Modifier.height(21.dp))
                         Button(
                             onClick = {
-                                mainViewModel.testLocalHttpRequest()
                             },
                             modifier = Modifier.fillMaxWidth()
                                 .height(60.dp)
@@ -104,6 +108,14 @@ class MainActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         unbindService(connection)
+    }
+
+    override fun onServerLifecycleEvent(lifecycleState: Int) {
+        when (lifecycleState) {
+            1 -> {// ready
+                mainViewModel.launchDefault()
+            }
+        }
     }
 }
 

@@ -2,6 +2,7 @@
 package com.shenyu.mock;
 
 // Declare any non-default types here with import statements
+import com.shenyu.mock.ILifecycleCallback;
 
 interface IMockService {
     /**
@@ -14,4 +15,8 @@ interface IMockService {
     void startServer();
 
     void stopServer();
+
+    void registerServerLifecycle(ILifecycleCallback callback);
+
+    void unregisterServerLifecycle(ILifecycleCallback callback);
 }

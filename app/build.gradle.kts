@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.compose)
 }
 
@@ -59,6 +60,9 @@ dependencies {
     implementation(project(":mock"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
@@ -83,11 +87,13 @@ dependencies {
     implementation(libs.ktor.client.websockets)
     implementation(libs.ktor.serialization.gson)
     implementation(libs.ktor.network.tls.certificates)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.serialization.gson)
     implementation(libs.gson)
 
 //    implementation(libs.web3j.core)
 //    implementation(libs.web3j.crypto)
 
     implementation(libs.blankj.utils)
-    implementation("org.bouncycastle:bcprov-jdk18on:1.77")
+    implementation(libs.bouncycastle.bcprov.jdk18on)
 }
