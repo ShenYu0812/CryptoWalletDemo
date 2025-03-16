@@ -15,4 +15,6 @@ This is a demo about the crypto wallet.
 8. TODO: 考虑创建钱包的能力，注册登录， PIN密码等；
 9. TODO: 考虑web3j库的区块链以太坊交互、智能合约、交易管理等其他能力加入到本demo。
 
-[![demo 运行效果](./Screenshot_20250316_180928.png "demo screenshot")]
+![image](https://github.com/user-attachments/assets/93cc98c9-098c-4936-95cc-07d72ab8c292)
+
+
