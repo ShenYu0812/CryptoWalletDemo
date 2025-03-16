@@ -2,31 +2,7 @@
 This is a demo about the crypto wallet.
 
 # 项目结构
-
-CryptoWalletDemo/
-├── app/ # Android 客户端
-│ ├── src/main/
-│ │ ├── java/
-│ │ │ └── com.shenyu.foris.wallet/
-│ │ │ ├── model/ # 数据模型
-│ │ │ ├── network/ # 网络通信
-│ │ │ ├── ui/ # UI组件
-│ │ │ ├── utils/ # 工具类
-│ │ │ └── viewmodel/ # ViewModel
-│ │ └── res/ # 资源文件
-│ └── build.gradle.kts # 应用级构建配置
-│
-└── server-netty/ # Ktor 服务端
-├── src/main/
-│ ├── java/
-│ │ └── com.shenyu.server.netty/
-│ │ ├── model/ # 数据模型
-│ │ ├── plugins/ # Ktor插件
-│ │ ├── services/ # 业务服务
-│ │ └── utils/ # 工具类
-│ └── resources/
-│ └── data/ # JSON数据文件
-└── build.gradle.kts # 服务端构建配置
+<img width="540" alt="image" src="https://github.com/user-attachments/assets/8efd6049-0686-4e04-a70b-355cef6917d3" />
 
 # 项目的基本想法
 1. 首先使用MVVM设计客户端；
