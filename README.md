@@ -2,8 +2,7 @@
 This is a demo about the crypto wallet.
 
 # 项目结构
-<img width="852" alt="image" src="https://github.com/user-attachments/assets/52a78599-d6ba-47fe-babe-95594b5b55c2" />
-
+<img width="897" alt="image" src="https://github.com/user-attachments/assets/a8616d21-92b7-4c52-a041-0083842d59b9" />
 
 # 项目的基本想法
 1. 首先使用MVVM设计客户端；
