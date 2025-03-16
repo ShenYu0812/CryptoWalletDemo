@@ -50,7 +50,7 @@ data class Currency(
 
 
 @Parcelize
-data class CurrenciesResponse(
+data class CurrenciesBean(
     val currencies: List<Currency>,
     val total: Int,
     val ok: Boolean

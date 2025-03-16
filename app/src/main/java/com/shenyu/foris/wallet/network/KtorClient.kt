@@ -1,6 +1,13 @@
 package com.shenyu.foris.wallet.network
 
+import android.util.Log
+import com.google.gson.Gson
+import com.shenyu.foris.wallet.model.BalanceBean
+import com.shenyu.foris.wallet.model.CurrenciesBean
+import com.shenyu.foris.wallet.model.LiveRatesBean
+import com.shenyu.foris.wallet.model.base.GenericResponse
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
@@ -9,6 +16,7 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.client.plugins.websocket.webSocket
 import io.ktor.client.request.get
+import io.ktor.client.request.post
 import io.ktor.http.ContentType
 import io.ktor.http.URLProtocol
 import io.ktor.http.contentType
@@ -17,11 +25,12 @@ import io.ktor.websocket.Frame
 import io.ktor.websocket.readText
 
 
-class KtorClient {
-    private val client = HttpClient(OkHttp) {
+object KtorClient {
+    private val gson = Gson()
+
+    val client = HttpClient(OkHttp) {
         engine {
             config {
-                // val trustManager = FakeTrustManager()
                 val trustManager = SslSettings.createTrustManager()
                 sslSocketFactory(SslSettings.createSSLContext(trustManager).socketFactory, trustManager)
             }
@@ -49,14 +58,36 @@ class KtorClient {
         client.sendPublicKeyToServer(publicKey, respond)
     }
 
-    suspend fun makeHttpRequest() {
-        val response = client.get("https://127.0.0.1:8443/https_link") {
-
-        }
-        println("HTTP response: $response")
+    suspend fun getCurrencies() {
+        val call = client.get("/api/currencies")
+        val bean = call.body<GenericResponse<CurrenciesBean?>>()
+        println("getCurrencies: $bean")
     }
 
-    suspend fun connectWebSocket() {
+    suspend fun postWalletsBalance() {
+        val call = client.post("/api/wallets/balance") {
+            // TODO: 构造请求
+        }
+        val bean = call.body<GenericResponse<BalanceBean?>>()
+        println("postBalance: $bean")
+    }
+
+    suspend fun connectWebSocket(updateBlocking: suspend (LiveRatesBean?) -> Unit) {
+        client.webSocket("wss://127.0.0.1:8443/socket/live_rates") {
+            for (frame in incoming) {
+                Log.v("rates_update", "received:${frame}")
+                (frame as? Frame.Text)?.apply text@{
+                    val jsonString = this@text.readText()
+                    val updateRates = runCatching {
+                        gson.fromJson(jsonString, LiveRatesBean::class.java)
+                    }.getOrNull()
+                    updateBlocking.invoke(updateRates)
+                }
+            }
+        }
+    }
+
+    suspend fun connectTestWebSocket() {
         client.webSocket("wss://127.0.0.1:8443/tasks") {
             val initialMessage = incoming.receive()
             if (initialMessage is Frame.Text) {

@@ -7,15 +7,15 @@ import kotlinx.parcelize.Parcelize
 
 
 @Parcelize
-data class ExchangeResponse(
+data class LiveRatesBean(
     val ok: Boolean,
     val warning: String,
-    val tiers: List<Tier>
+    val tiers: List<LiveRate>
 ): Parcelable
 
 
 @Parcelize
-data class Tier(
+data class LiveRate(
     @SerializedName("from_currency")
     val fromCurrency: String,
     @SerializedName("to_currency")

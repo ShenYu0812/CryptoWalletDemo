@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -29,12 +30,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.lifecycleScope
+import com.blankj.utilcode.util.LogUtils
 import com.shenyu.foris.wallet.ui.theme.CryptoWalletTheme
 import com.shenyu.foris.wallet.viewmodel.MainViewModel
 import com.shenyu.foris.wallet.network.DefaultServerLifecycleCallback
 import com.shenyu.foris.wallet.network.OnServerLifecycleEvent
 import com.shenyu.mock.IMockService
 import com.shenyu.mock.MockService
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity(), OnServerLifecycleEvent {
 
@@ -71,6 +76,7 @@ class MainActivity : ComponentActivity(), OnServerLifecycleEvent {
                         Spacer(modifier = Modifier.height(21.dp))
                         Button(
                             onClick = {
+                                mainViewModel.getCurrencies()
                             },
                             modifier = Modifier.fillMaxWidth()
                                 .height(60.dp)
@@ -85,7 +91,7 @@ class MainActivity : ComponentActivity(), OnServerLifecycleEvent {
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(
                             onClick = {
-                                mainViewModel.testWebsockets()
+                                mainViewModel.postWalletsBalance()
                             },
                             modifier = Modifier.fillMaxWidth()
                                 .height(60.dp)
@@ -103,6 +109,15 @@ class MainActivity : ComponentActivity(), OnServerLifecycleEvent {
         }
         val serviceIntent = Intent(this, MockService::class.java)
         bindService(serviceIntent, connection, Context.BIND_AUTO_CREATE)
+        collectData()
+    }
+
+    private fun collectData() {
+        lifecycleScope.launch {
+            mainViewModel.liveRatesFlow.collectLatest { rates ->
+                LogUtils.json("rates_update", rates)
+            }
+        }
     }
 
     override fun onDestroy() {
@@ -113,7 +128,7 @@ class MainActivity : ComponentActivity(), OnServerLifecycleEvent {
     override fun onServerLifecycleEvent(lifecycleState: Int) {
         when (lifecycleState) {
             1 -> {// ready
-                mainViewModel.launchDefault()
+                mainViewModel.launchDefault(this@MainActivity)
             }
         }
     }
