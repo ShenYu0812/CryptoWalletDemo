@@ -37,7 +37,6 @@ class MainViewModel: ViewModel() {
     private fun connectWebSocket(lifecycleOwner: LifecycleOwner) {
         lifecycleOwner.lifecycleScope.launch {
             webSocketClient.connectWithFlow().collect { message ->
-                LogUtils.json("rates_update", "connectWithFlow received:${message}")
                 // 处理接收到的消息
                 handleWebSocketMessage(message)
             }

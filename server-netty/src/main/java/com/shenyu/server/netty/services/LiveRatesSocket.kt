@@ -19,7 +19,10 @@ class LiveRatesService {
     private val gson = Gson()
 
     private var baseRates: LiveRatesDTO? = ResourceReader.readJsonResource<LiveRatesDTO>(
-        path = "data/live_rates.json").getOrNull()
+        path = "data/live_rates.json").getOrNull()?.apply {
+            val t = tiers.subList(0, 10)
+        logger.error("t:${t.joinToString(",")}")
+    }
 
     fun generateLiveRatesFlow(): Flow<String> = flow {
         while (true) {
@@ -43,12 +46,12 @@ class LiveRatesService {
 
         val currentTimeStamp = System.currentTimeMillis() / 1000
 
-        currentRates.tiers.forEach { tier ->
+        currentRates.tiers.onEach { tier ->
             // 更新时间戳
             tier.timeStamp = currentTimeStamp
 
             // 更新汇率
-            tier.rates = tier.rates.map { rateDTO ->
+            tier.rates = tier.flatFractionation().rates.map { rateDTO ->
                 // 随机决定是否产生剧烈波动（10%的概率）
                 val isVolatile = nextDouble() < 0.1
 
