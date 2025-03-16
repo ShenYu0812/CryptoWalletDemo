@@ -2,7 +2,8 @@
 This is a demo about the crypto wallet.
 
 # 项目结构
-<img width="540" alt="image" src="https://github.com/user-attachments/assets/8efd6049-0686-4e04-a70b-355cef6917d3" />
+<img width="852" alt="image" src="https://github.com/user-attachments/assets/52a78599-d6ba-47fe-babe-95594b5b55c2" />
+
 
 # 项目的基本想法
 1. 首先使用MVVM设计客户端；
@@ -15,4 +16,4 @@ This is a demo about the crypto wallet.
 8. TODO: 考虑创建钱包的能力；
 9. TODO: 考虑web3j库的区块链以太坊交互、智能合约、交易管理等其他能力加入到本demo。
 
-[demo 运行效果](./Screenshot_20250316_180928.png "demo screenshot")
+[![demo 运行效果](./Screenshot_20250316_180928.png "demo screenshot")]
