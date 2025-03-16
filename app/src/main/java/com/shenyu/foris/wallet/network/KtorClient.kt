@@ -1,6 +1,7 @@
 package com.shenyu.foris.wallet.network
 
 import android.util.Log
+import com.blankj.utilcode.util.LogUtils
 import com.google.gson.Gson
 import com.shenyu.foris.wallet.model.BalanceBean
 import com.shenyu.foris.wallet.model.CurrenciesBean
@@ -58,18 +59,18 @@ object KtorClient {
         client.sendPublicKeyToServer(publicKey, respond)
     }
 
-    suspend fun getCurrencies() {
-        val call = client.get("/api/currencies")
-        val bean = call.body<GenericResponse<CurrenciesBean?>>()
-        println("getCurrencies: $bean")
+    suspend fun getCurrencies(): GenericResponse<CurrenciesBean?> {
+        return client.get("/api/currencies")
+            .body<GenericResponse<CurrenciesBean?>>()
     }
 
-    suspend fun postWalletsBalance() {
-        val call = client.post("/api/wallets/balance") {
+    suspend fun postWalletsBalance(): GenericResponse<BalanceBean?> {
+        return client.post("/api/wallets/balance") {
             // TODO: 构造请求
+        }.body<GenericResponse<BalanceBean?>>().apply {
+            LogUtils.e("postWalletsBalance")
+            LogUtils.json(data)
         }
-        val bean = call.body<GenericResponse<BalanceBean?>>()
-        println("postBalance: $bean")
     }
 
     suspend fun connectWebSocket(updateBlocking: suspend (LiveRatesBean?) -> Unit) {

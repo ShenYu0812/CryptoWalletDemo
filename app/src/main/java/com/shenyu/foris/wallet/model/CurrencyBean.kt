@@ -48,6 +48,16 @@ data class Currency(
     val numConfirmationRequired: Int
 ): Parcelable
 
+// only for ui preview
+fun defaultCurrency(): Currency = Currency(
+    "BTC", "Bitcoin", "BTC", 8, "", listOf("30 secs", "2 mins", "30 mins"),
+    "https://s3-ap-southeast-1.amazonaws.com/monaco-cointrack-production/uploads/coin/colorful_logo/5c1246f55568a400e48ac233/bitcoin.png",
+    "https://s3-ap-southeast-1.amazonaws.com/monaco-cointrack-production/uploads/coin/gray_logo/5c1246f55568a400e48ac233/bitcoin1.png",
+    false, 0, "BTC", "BTC", "BTC",
+    "https://blockchair.com/bitcoin/transaction/", false, 0, "10000000",
+    8, false, "", "", 1
+)
+
 
 @Parcelize
 data class CurrenciesBean(

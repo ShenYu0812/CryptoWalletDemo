@@ -2,9 +2,9 @@ package com.shenyu.foris.wallet.model
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import com.shenyu.foris.wallet.utils.validateNumber
 import kotlinx.parcelize.Parcelize
 
+private const val VALID_TIME_INTERVAL = 5 * 60 //seconds
 
 @Parcelize
 data class LiveRatesBean(
@@ -25,12 +25,10 @@ data class LiveRate(
     val timestamp: Long
 ): Parcelable {
 
-    fun exchanged(exchangeAmount: Double): ExchangeResult? = runCatching tier@{
-        val rate = this@tier.rates.lastOrNull()?.rate?.validateNumber()
-            ?: return@tier null
-        val exchangeResult = exchangeAmount * rate
-        ExchangeResult(fromCurrency, toCurrency, exchangeAmount, exchangeResult)
-    }.getOrNull()
+    fun isValidLiveRate(): Boolean {
+        val timeInterval = ((System.currentTimeMillis() / 1000) - timestamp)
+        return timeInterval in 0..VALID_TIME_INTERVAL
+    }
 }
 
 
@@ -40,3 +38,12 @@ data class Rate(
     val rate: String,
 ): Parcelable
 
+fun Rate.amountLevel(): @AmountLevel Int {
+    return when (amount) {
+        "0" -> AmountLevel.LEVEL_0
+        "100" -> AmountLevel.LEVEL_1
+        "1000" -> AmountLevel.LEVEL_2
+        "100000" -> AmountLevel.LEVEL_3
+        else -> AmountLevel.LEVEL_2
+    }
+}

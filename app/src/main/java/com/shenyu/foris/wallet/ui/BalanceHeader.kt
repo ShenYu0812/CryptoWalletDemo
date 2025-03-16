@@ -48,7 +48,7 @@ fun BalanceHeader(
         modifier = modifier
             .fillMaxWidth()
             .background(color = colorResource(R.color.color_ff0a1f3d))
-            .padding(16.dp),
+            .padding(top = 32.dp, bottom = 21.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(

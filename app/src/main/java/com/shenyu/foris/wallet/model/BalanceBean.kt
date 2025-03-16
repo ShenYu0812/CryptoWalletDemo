@@ -1,9 +1,7 @@
 package com.shenyu.foris.wallet.model
 
 import android.os.Parcelable
-import com.shenyu.foris.wallet.utils.validateNumber
 import kotlinx.parcelize.Parcelize
-import java.math.BigDecimal
 
 
 @Parcelize
@@ -18,13 +16,16 @@ data class BalanceBean(
 data class WalletBean(
     val currency: String,
     val amount: Double
-): Parcelable {
+): Parcelable
 
-    fun balance(): BigDecimal = runCatching {
-        val vc = currency.validateNumber()
-            ?: throw NumberFormatException("$currency is not a valid number")
-        (vc * amount).toBigDecimal()
-    }.onFailure { e ->
-        e.printStackTrace()
-    }.getOrElse { BigDecimal.ZERO }
+
+fun List<WalletBean>.toMap(): Map<String, Double> {
+    val map = hashMapOf<String, Double>()
+    forEach { (c, a) ->
+        if (c.isNotBlank() && a > 0.0) {
+            val old = map[c]
+            map[c] = (old ?: 0.0) + a
+        }
+    }
+    return map
 }
