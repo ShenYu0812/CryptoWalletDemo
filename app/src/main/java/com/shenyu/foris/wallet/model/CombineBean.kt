@@ -4,7 +4,7 @@ import androidx.annotation.IntDef
 import java.math.BigDecimal
 
 data class UserTotalBalance(
-    val totalBalance: BigDecimal = BigDecimal(0.0),
+    val totalBalance: BigDecimal = BigDecimal.ZERO,
     val unit: String = "USD", // e.g. USD "${unit} ${totalBalance}"
 )
 
@@ -38,6 +38,14 @@ fun List<LiveRate>.flatten(): List<RateWithCurrencyInfo> {
         }
     }
 }
+
+
+data class WalletWithCurrencyInfo(
+    val balanceUsd: BigDecimal = BigDecimal.ZERO,
+    val balanceAmount: Double = 0.0,
+    val currencyName: String,
+    var currency: Currency? = null,
+)
 
 
 @Target(

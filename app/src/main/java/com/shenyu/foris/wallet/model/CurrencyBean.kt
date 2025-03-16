@@ -3,6 +3,7 @@ package com.shenyu.foris.wallet.model
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
+import java.math.BigDecimal
 
 @Parcelize
 data class Currency(
@@ -49,6 +50,9 @@ data class Currency(
 ): Parcelable
 
 // only for ui preview
+fun defaultWalletWithCurrencyInfo(): WalletWithCurrencyInfo =
+    WalletWithCurrencyInfo(BigDecimal(12.5566), 1.4,"BTC", defaultCurrency())
+
 fun defaultCurrency(): Currency = Currency(
     "BTC", "Bitcoin", "BTC", 8, "", listOf("30 secs", "2 mins", "30 mins"),
     "https://s3-ap-southeast-1.amazonaws.com/monaco-cointrack-production/uploads/coin/colorful_logo/5c1246f55568a400e48ac233/bitcoin.png",

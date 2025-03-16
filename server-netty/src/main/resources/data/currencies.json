@@ -27,7 +27,8 @@
       "deposit_address_tag_name": "",
       "deposit_address_tag_type": "",
       "num_confirmation_required": 1
-    }, {
+    },
+    {
       "coin_id": "ETH",
       "name": "Ethereum",
       "symbol": "ETH",
@@ -54,7 +55,8 @@
       "deposit_address_tag_name": "",
       "deposit_address_tag_type": "",
       "num_confirmation_required": 1
-    }, {
+    },
+    {
       "coin_id": "CRO",
       "name": "Crypto.com Coin",
       "symbol": "CRO",
@@ -81,7 +83,8 @@
       "deposit_address_tag_name": "",
       "deposit_address_tag_type": "",
       "num_confirmation_required": 1
-    }, {
+    },
+    {
       "coin_id": "USDT",
       "name": "Tether",
       "symbol": "USDT",
@@ -108,7 +111,8 @@
       "deposit_address_tag_name": "",
       "deposit_address_tag_type": "",
       "num_confirmation_required": 1
-    }, {
+    },
+    {
       "coin_id": "DAI",
       "name": "dai03",
       "symbol": "DAI",

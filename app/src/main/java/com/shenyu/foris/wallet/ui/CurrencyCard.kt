@@ -1,5 +1,7 @@
 package com.shenyu.foris.wallet.ui
 
+import androidx.annotation.DrawableRes
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,30 +17,37 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.shenyu.foris.wallet.model.Currency
-import com.shenyu.foris.wallet.model.WalletBean
-import com.shenyu.foris.wallet.model.defaultCurrency
-import com.shenyu.foris.wallet.utils.formatWithCommas
-import com.shenyu.foris.wallet.utils.formatWithPrecision
-import java.math.BigDecimal
+import coil.request.ImageRequest
+import com.shenyu.foris.wallet.R
+
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 fun CurrencyCard(
-    currency: Currency = defaultCurrency(),
-
-    balance: WalletBean = WalletBean("BTC", 1.4),
-    modifier: Modifier = Modifier
+    onClick: () -> Unit = {},
+    imageUrl: String? = null,
+    currencyCode: String? = "BTC",
+    currencyName: String? = "Bitcoin",
+    balanceAmount: Double? = 1235.67,
+    balanceUsd: String? = "1.4567890",
+    @DrawableRes
+    defaultImage: Int = R.drawable.ic_mco,
+    modifier: Modifier = Modifier,
 ) {
-//    val usdValue = currency.
+
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            .padding(horizontal = 16.dp, vertical = 5.dp)
+            .clickable {
+                onClick.invoke()
+            },
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
     ) {
         Row(
             modifier = Modifier
@@ -51,40 +60,40 @@ fun CurrencyCard(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // 货币图标
                 AsyncImage(
-                    model = currency.colorfulImageUrl,
-                    contentDescription = currency.name,
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(imageUrl)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = currencyName,
                     modifier = Modifier
                         .size(40.dp)
-                        .clip(CircleShape)
+                        .clip(CircleShape),
+                    error = painterResource(defaultImage)
                 )
 
-                // 货币信息
                 Column {
                     Text(
-                        text = currency.code,
+                        text = currencyName ?: "Unknown code",
                         style = MaterialTheme.typography.titleMedium
                     )
                     Text(
-                        text = currency.name,
+                        text = currencyCode ?: "Unknown name",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                     )
                 }
             }
 
-            // 余额信息
             Column(
                 horizontalAlignment = Alignment.End
             ) {
                 Text(
-                    text = "${BigDecimal(1.45678).formatWithPrecision(10)} ${currency.code}",
+                    text = "$balanceAmount $currencyName",
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(
-                    // TODO: need calc with rate
-                    text = BigDecimal(1234.567809).formatWithCommas(),
+                    text =  "$ ${balanceUsd ?: "0.00"}",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                 )

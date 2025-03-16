@@ -1,6 +1,5 @@
 package com.shenyu.foris.wallet.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
@@ -9,9 +8,9 @@ import com.blankj.utilcode.util.LogUtils
 import com.google.gson.Gson
 import com.shenyu.foris.wallet.model.Currency
 import com.shenyu.foris.wallet.model.LiveRatesBean
-import com.shenyu.foris.wallet.model.RateWithCurrencyInfo
 import com.shenyu.foris.wallet.model.UserTotalBalance
 import com.shenyu.foris.wallet.model.WalletBean
+import com.shenyu.foris.wallet.model.WalletWithCurrencyInfo
 import com.shenyu.foris.wallet.model.WalletWithRates
 import com.shenyu.foris.wallet.model.amountLevel
 import com.shenyu.foris.wallet.model.flatten
@@ -43,7 +42,9 @@ class MainViewModel: ViewModel() {
     val currencies: StateFlow<List<Currency>?> = _currencies.asStateFlow()
 
     private val _walletBalance = MutableStateFlow<List<WalletBean>>(emptyList())
-    val walletBalance: StateFlow<List<WalletBean>> = _walletBalance.asStateFlow()
+    private val walletBalance: StateFlow<List<WalletBean>> = _walletBalance.asStateFlow()
+
+    private val _walletWithCurrency = MutableStateFlow<List<WalletWithCurrencyInfo>>(emptyList())
 
     val userWalletsTotalBalance: Flow<UserTotalBalance> = combine(walletBalance, liveRatesFlow) { wb, lRates ->
         if (wb.isEmpty() || lRates?.tiers.isNullOrEmpty()) return@combine UserTotalBalance()
@@ -51,9 +52,8 @@ class MainViewModel: ViewModel() {
         LogUtils.v("lr=${lRates?.tiers?.joinToString("\n")}")
 
         val wbMap = wb.toMap()
+        val tmpList = mutableListOf<WalletWithCurrencyInfo>()
         val walletWithRatesMap = hashMapOf<WalletWithRates.Key, WalletWithRates>()
-
-        LogUtils.i("after wb for loop:${wbMap.entries.joinToString("/n")}")
 
         if (wbMap.isNotEmpty()) {
             lRates?.tiers?.filter { tier ->
@@ -64,20 +64,34 @@ class MainViewModel: ViewModel() {
                 if (actualAmountLevel == rwc.rate.amountLevel()) {
                     val key = WalletWithRates.Key(rwc.fromCurrency, amountLevel = actualAmountLevel)
                     walletWithRatesMap[key] = WalletWithRates(amount, rwc.rate)
+
                 }
             }
         }
 
-
-        LogUtils.e("after live rates for loop:${walletWithRatesMap.entries.joinToString("/n")}")
-
         var totalBalance = BigDecimal(0.0)
-        walletWithRatesMap.forEach { (_, wwr) ->
+        walletWithRatesMap.forEach { (key, wwr) ->
             val rate = wwr.rate?.rate?.toDoubleOrNull() ?: return@forEach
-            totalBalance += BigDecimal(rate) * BigDecimal(wwr.amount)
+            val balance = BigDecimal(rate) * BigDecimal(wwr.amount)
+            tmpList.add(WalletWithCurrencyInfo(balance, wwr.amount, key.fromCurrency))
+            totalBalance += balance
         }
+        _walletWithCurrency.tryEmit(tmpList)
         UserTotalBalance(totalBalance = totalBalance)
     }
+
+    val userBalanceDetails: Flow<List<WalletWithCurrencyInfo>> =
+        combine(_walletWithCurrency, _currencies) { wwc, cs ->
+            val result = mutableListOf<WalletWithCurrencyInfo>()
+            if (wwc.isEmpty()) return@combine result
+            val wwcMap = wwc.associateBy { w -> w.currencyName }
+            cs.forEach { c ->
+                wwcMap[c.coinId]?.apply w@{
+                    result.add(this@w.copy(currency = c))
+                }
+            }
+            result.filter { d -> d.currency != null }
+        }
 
     private val _error = MutableSharedFlow<String>()
     val error: SharedFlow<String> = _error.asSharedFlow()
@@ -106,6 +120,7 @@ class MainViewModel: ViewModel() {
         viewModelScope.launch(Dispatchers.IO + SupervisorJob()) {
             runCatching {
                 KtorClient.getCurrencies().apply {
+                    LogUtils.d("getCurrencies:${data?.total}, ${data?.currencies?.size}")
                     when {
                         code == 0 -> {
                             data?.currencies?.apply cc@{
