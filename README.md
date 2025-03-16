@@ -11,8 +11,8 @@ This is a demo about the crypto wallet.
 4. 使用 kotlin compose\ viewmodel\ coutinescope\ ktor 等主流套件实现 UI/UX/数据构造与资源管理/网络通讯；
 5. 使用openssl 生成密钥、证书；确保localhost运行在安全的网络请求中；
 6. 尝试在ssl通讯过后，前后端分别生成用于数据加密的privateKey/ publicKey， 用于请求中的数据加密(生成了 并相互传输了公钥，TODO: 数据公钥加密，私钥解密);
-7. TODO: 前置模块的思考，应该在Demo页面的前置部分，添加区块链/以太坊代币的 助记词填写页面，然后将助记词进行本地安全存储，通过本地助记词获取钱包地址，查询钱包余额；
-8. TODO: 考虑创建钱包的能力；
+7. TODO: 前置模块的思考，应该在Demo页面的前置部分，添加区块链/以太坊代币的 助记词填写页面，然后将助记词进行本地安全存储，通过本地助记词获取钱包地址；
+8. TODO: 考虑创建钱包的能力，注册登录， PIN密码等；
 9. TODO: 考虑web3j库的区块链以太坊交互、智能合约、交易管理等其他能力加入到本demo。
 
 [![demo 运行效果](./Screenshot_20250316_180928.png "demo screenshot")]
